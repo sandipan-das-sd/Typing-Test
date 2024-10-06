@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Speed Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+            background: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+        }
+        #test-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+        #text-input {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            font-size: 18px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+            outline: none;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #ccc;
+        }
+        .result {
+            font-size: 18px;
+            margin-top: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="test-container">
+        <h1>Typing Speed Calculator</h1>
+        <p id="sample-text">The quick brown fox jumps over the lazy dog.</p>
+        <textarea id="text-input" placeholder="Start typing here..." disabled></textarea>
+        <br><br>
+        <button id="start-test-btn">Start Test</button>
+        <div class="result">
+            <p id="wpm">WPM: 0</p>
+            <p id="accuracy">Accuracy: 100%</p>
+        </div>
+    </div>
+
+    <script>
+        const sampleText = "The quick brown fox jumps over the lazy dog.";
+        const textInput = document.getElementById('text-input');
+        const startTestBtn = document.getElementById('start-test-btn');
+        const wpmDisplay = document.getElementById('wpm');
+        const accuracyDisplay = document.getElementById('accuracy');
+        
+        let startTime, interval;
+
+        function startTest() {
+            textInput.value = '';
+            textInput.disabled = false;
+            textInput.focus();
+            startTestBtn.disabled = true;
+            startTime = new Date().getTime();
+            interval = setInterval(calculateWPM, 1000);
+        }
+
+        function calculateWPM() {
+            const currentTime = new Date().getTime();
+            const timeElapsed = (currentTime - startTime) / 1000 / 60; // minutes
+
+            const typedText = textInput.value;
+            const wordsTyped = typedText.split(' ').length;
+
+            // Calculate WPM
+            const wpm = Math.floor(wordsTyped / timeElapsed);
+            wpmDisplay.textContent = `WPM: ${wpm}`;
+
+            // Calculate accuracy
+            const correctCharacters = typedText.split('').filter((char, index) => char === sampleText[index]).length;
+            const accuracy = Math.floor((correctCharacters / sampleText.length) * 100);
+            accuracyDisplay.textContent = `Accuracy: ${accuracy}%`;
+
+            // Stop when the text matches the sample text
+            if (typedText === sampleText) {
+                clearInterval(interval);
+                textInput.disabled = true;
+                startTestBtn.disabled = false;
+            }
+        }
+
+        startTestBtn.addEventListener('click', startTest);
+    </script>
+
+</body>
+</html>
